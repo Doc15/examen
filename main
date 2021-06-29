@@ -1,0 +1,141 @@
+using System;
+using System.Collections;
+using System.Linq;
+using System.Text;
+namespace ConsoleApplication1
+{
+ class Program
+  {
+   public static int i, j, k, kol;
+   public struct uzel 
+    {
+     public int nom;
+     public int ki;
+     public int kj;
+    };
+   public static uzel n = new uzel();
+   static void vkl(Stack vst, uzel n)
+    {
+     vst.Push(n);
+    }
+   static void iskl(Stack vst)
+    {
+     if (vst == null) Console.WriteLine("Стек пуст !");
+      else  n = (uzel)vst.Pop();
+    }
+    public static void Main()
+    {
+     Stack vstek = new Stack();
+     string buf;
+     int beg, en, x, i1,i2;
+     uzel y1 = new uzel();
+     bool[] nov = new bool[10];
+     int[,] p = new int[9, 9];
+     int[] m = new int[10]; 
+     //Матрица смежности графа 
+     int[,] a = new int[9, 9]
+      {{   0,   6,1000,   4,1000,1000,1000,1000,1000},
+       {   6,   0,   5,1000,1000,1000,1000,   4,1000},
+       {1000,   5,   0,   3,   4,1000,   5,   6,1000},
+       {   4,1000,   3,   0,   7,1000,1000,1000,1000},
+       {1000,1000,   4,   7,   0,   5,1000,1000,1000},
+       {1000,1000,1000,1000,   5,   0,   4,1000,   9},
+       {1000,1000,   5,1000,1000,   4,   0,1000,   6},
+       {1000,   4,   6,1000,1000,1000,1000,   0,   8},
+       {1000,1000,1000,1000,1000,   9,   6,   8,   0}};
+   //Формирование списков смежных вершин по матрице а  
+     for (i = 0; i < 9; i++)
+      {
+       p[i,0] = i;k=1;
+       for (j = 0; j < 9; j++)
+        if ((a[i, j] != 1000) && (a[i, j] != 0))
+         {
+          p[i,k]=j;
+          k++;
+         }
+       p[i,k]=1000;  
+      }
+   //Печать списков смежных вершин         
+     for (i = 0; i < 9; i++)
+      {
+       k = 0;
+       while (p[i,k] != 1000)
+        {
+         Console.Write(" {0}", p[i,k]);
+         k++;
+        }
+       Console.WriteLine();
+      }
+  Console.Write("Введите номер начального узла графа? ");
+     buf = Console.ReadLine();
+     beg = Convert.ToInt32(buf);
+  Console.Write("Введите номер конечного узла графа? ");
+     buf = Console.ReadLine();
+     en = Convert.ToInt32(buf);
+     //Начальные установки программы
+     for (i = 0; i < 9; i++)
+      {
+       nov[i] = true;
+       m[i] = 0;
+      }
+nov[9] = false;
+x = 1;         //Номер очередного маршрута
+m[1] = beg; i1 = 2;
+y1.nom = beg; //Определяем поле nom узла y1
+y1.ki = beg;  // Запоминаем номер списка смеж. вершин
+y1.kj = 0;  // Запоминаем номер текущей позиции в списке
+vkl(vstek, y1);
+kol = 1;       //Количество элементов в стеке
+nov[beg] = false;
+nov[en] = false;
+i = beg; j = 0;
+//Цикл поиска всех маршрутов в графе
+     while (kol != 0)
+      {
+       do
+        {
+         j++;
+         if (p[i,j] == en)
+          {
+           Console.Write(" путь - {0} -", x); x++;
+           for (i2 = 1; i2 < i1; i2++)
+            Console.Write(" {0}", m[i2]);
+           Console.WriteLine(" {0}", en);
+          }
+        }
+       while ((p[i,j] != 1000) && (!nov[p[i,j]]));
+       if (p[i,j] != 1000)
+        if (nov[p[i,j]])
+         {
+          y1.ki = i;
+          y1.kj = j;
+          i = p[i,j];
+          y1.nom = i;
+          vkl(vstek, y1);
+          j = 0;
+          kol++;
+          nov[i] = false;
+          m[i1] = i;
+          i1++;
+         };
+       
+       if (p[i,j] == 1000)
+        {
+         kol--;
+         if (kol != 0)
+          {
+           iskl(vstek);
+           i = n.ki;
+           j = n.kj;
+           i1--;
+           m[i1] = 0;
+           nov[n.nom] = true;
+          }
+        };
+      }
+Console.WriteLine();
+Console.WriteLine("Для продолжения нажмите клавишу Enter");
+Console.ReadLine();
+    }
+  }
+}
